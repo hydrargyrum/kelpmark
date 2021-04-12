@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from decimal import Decimal
 import os
 from pathlib import Path
 import sys
@@ -34,6 +35,7 @@ class Window(QMainWindow, WinUi):
 
         self.image = None
         self.path = Path.cwd() / "fake"
+        self.zoom = Decimal(1)
 
     @Slot()
     def on_colorButton_clicked(self):
@@ -94,6 +96,10 @@ class Window(QMainWindow, WinUi):
 
         target = self.image.copy()
         self.paintOn(target)
+        target = target.scaled(
+            target.size() * self.zoom,
+            Qt.IgnoreAspectRatio, Qt.SmoothTransformation
+        )
         self.imgDisplay.setPixmap(QPixmap(target))
 
     def paintOn(self, device):
@@ -110,6 +116,21 @@ class Window(QMainWindow, WinUi):
         painter.drawText(device.rect(), Qt.AlignCenter, text)
 
         painter.end()
+
+    @Slot()
+    def on_actionZoomOriginal_triggered(self):
+        self.zoom = Decimal("1")
+        self.paintText()
+
+    @Slot()
+    def on_actionZoomIn_triggered(self):
+        self.zoom *= Decimal("1.5")
+        self.paintText()
+
+    @Slot()
+    def on_actionZoomOut_triggered(self):
+        self.zoom /= Decimal("1.5")
+        self.paintText()
 
 
 if __name__ == "__main__":
