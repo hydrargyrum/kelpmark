@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+from pathlib import Path
 import sys
 
 from PyQt5.QtCore import pyqtSlot as Slot, Qt
@@ -32,6 +33,7 @@ class Window(QMainWindow, WinUi):
         self.fontButton.setText(self.font.family())
 
         self.image = None
+        self.path = Path.cwd() / "fake"
 
     @Slot()
     def on_colorButton_clicked(self):
@@ -54,14 +56,32 @@ class Window(QMainWindow, WinUi):
         self.paintText()
 
     @Slot()
-    def on_actionOpen_triggered(self):
-        path = QFileDialog.getOpenFileName(
-            self, "Open image", os.getcwd(),
+    def on_actionSave_triggered(self):
+        if not self.image:
+            return
+
+        path = QFileDialog.getSaveFileName(
+            self, "Save image", str(self.path.parent),
             "Images (*.png *.jpg *.jpeg)",
         )
         if not path[0]:
             return
-        self.loadImage(path[0])
+
+        self.path = Path(path[0])
+        target = self.image.copy()
+        self.paintOn(target)
+        target.save(str(self.path))
+
+    @Slot()
+    def on_actionOpen_triggered(self):
+        path = QFileDialog.getOpenFileName(
+            self, "Open image", str(self.path.parent),
+            "Images (*.png *.jpg *.jpeg)",
+        )
+        if not path[0]:
+            return
+        self.path = Path(path[0])
+        self.loadImage(str(self.path))
 
     def loadImage(self, path):
         self.image = QImage(path)

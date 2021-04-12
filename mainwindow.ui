@@ -69,6 +69,7 @@
      <string>&amp;File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
    </widget>
    <addaction name="menu_File"/>
   </widget>
@@ -107,7 +108,7 @@
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>Text angle</string>
+            <string>Text &amp;angle</string>
            </property>
            <property name="buddy">
             <cstring>textAngle</cstring>
@@ -133,7 +134,7 @@
          <item>
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>Text opacity</string>
+            <string>Text &amp;opacity</string>
            </property>
            <property name="buddy">
             <cstring>textOpacity</cstring>
@@ -156,7 +157,10 @@
          <item>
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Text size</string>
+            <string>Text &amp;size</string>
+           </property>
+           <property name="buddy">
+            <cstring>fontSize</cstring>
            </property>
           </widget>
          </item>
@@ -220,7 +224,18 @@
   </widget>
   <action name="actionOpen">
    <property name="text">
-    <string>&amp;Open</string>
+    <string>&amp;Open...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>&amp;Save...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
  </widget>
