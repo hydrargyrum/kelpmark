@@ -3,7 +3,7 @@
 import os
 import sys
 
-from PyQt5.QtCore import pyqtSlot as Slot
+from PyQt5.QtCore import pyqtSlot as Slot, Qt
 from PyQt5.QtGui import (
     QImage, QPixmap, QFont, QPen, QColor, QPainter,
 )
@@ -25,6 +25,7 @@ class Window(QMainWindow, WinUi):
         self.textEdit.textChanged.connect(self.paintText)
         self.textAngle.valueChanged.connect(self.paintText)
         self.textOpacity.valueChanged.connect(self.paintText)
+        self.fontSize.valueChanged.connect(self.paintText)
 
         self.color = QColor(0, 0, 0)
         self.font = QFont("Serif", 32)
@@ -49,6 +50,7 @@ class Window(QMainWindow, WinUi):
 
         self.font = font
         self.fontButton.setText(self.font.family())
+        self.fontSize.setValue(self.font.pointSize())
         self.paintText()
 
     @Slot()
@@ -77,7 +79,7 @@ class Window(QMainWindow, WinUi):
     def paintOn(self, device):
         painter = QPainter(device)
 
-        # self.font.setPointSize(self.fontSize.value())
+        self.font.setPointSize(self.fontSize.value())
         painter.setFont(self.font)
 
         self.color.setAlpha(self.textOpacity.value())
@@ -85,7 +87,7 @@ class Window(QMainWindow, WinUi):
 
         text = self.textEdit.toPlainText()
 
-        painter.drawText(5, 50, text)
+        painter.drawText(device.rect(), Qt.AlignCenter, text)
 
         painter.end()
 
