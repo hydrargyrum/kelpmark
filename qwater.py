@@ -4,6 +4,7 @@ from decimal import Decimal
 from pathlib import Path
 import sys
 
+from popplerqt5 import Poppler
 from PyQt5.QtCore import pyqtSlot as Slot, Qt
 from PyQt5.QtGui import (
     QImage, QPixmap, QFont, QPen, QColor, QPainter,
@@ -87,21 +88,34 @@ class Window(QMainWindow, WinUi):
     def on_actionOpen_triggered(self):
         path, filter = QFileDialog.getOpenFileName(
             self, "Open image", str(self.lastPath),
-            "Images (*.png *.jpg *.jpeg)",
+            "Images (*.png *.jpg *.jpeg);;PDF (*.pdf)",
         )
         if not path:
             return
 
         self.lastPath = Path(path).parent
 
-        self.loadImage(path)
+        if path.endswith(".pdf"):
+            self.loadPdf(path)
+        else:
+            self.loadImage(path)
 
     def loadImage(self, path):
-        self.images.append(QImage(path))
+        self.addImage(QImage(path))
+
+    def addImage(self, image):
+        self.images.append(image)
 
         layout = self.imagesContainer.layout()
         layout.addWidget(QLabel(parent=self.imagesContainer))
         self.paintTextImage(layout.count() - 1)
+
+    def loadPdf(self, path):
+        doc = Poppler.Document.load(path)
+        for i in range(doc.numPages()):
+            page = doc.page(i)
+            image = page.renderToImage()
+            self.addImage(image)
 
     def getImageWidget(self, i):
         return self.imagesContainer.layout().itemAt(i).widget()
