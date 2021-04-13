@@ -164,7 +164,11 @@ if __name__ == "__main__":
     if sys.excepthook is sys.__excepthook__:
         sys.excepthook = lambda *args: sys.__excepthook__(*args)
 
-    app = QApplication([])
+    app = QApplication(sys.argv)
     win = Window()
     win.show()
+
+    for file in app.arguments()[1:]:
+        win.loadImage(file)
+
     app.exec()
