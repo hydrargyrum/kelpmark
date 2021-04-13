@@ -11,13 +11,30 @@ from PyQt5.QtGui import (
 )
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow,
-    QFileDialog, QColorDialog, QFontDialog,
+    QFileDialog, QColorDialog, QFontDialog, QInputDialog,
     QLabel,
 )
 from PyQt5.uic import loadUiType
 
 
 WinUi = loadUiType(str(Path(__file__).with_name("mainwindow.ui")))[0]
+
+
+class ResolutionDialog(QInputDialog):
+    def __init__(self, pageSize, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.pageSize = pageSize
+        self.setInputMode(QInputDialog.IntInput)
+        self.setIntRange(10, 600)
+        self.intValueChanged.connect(self.updateLabel)
+
+        self.setIntValue(72)
+
+    @Slot(int)
+    def updateLabel(self, dpi):
+        dpi = Decimal(dpi)
+        newSize = self.pageSize * dpi / 72
+        self.setLabelText(f"DPI (computed dimensions: {newSize.width()}x{newSize.height()} px)")
 
 
 class Window(QMainWindow, WinUi):
@@ -112,9 +129,14 @@ class Window(QMainWindow, WinUi):
 
     def loadPdf(self, path):
         doc = Poppler.Document.load(path)
+        page = doc.page(0)
+        dlg = ResolutionDialog(page.pageSize(), parent=self)
+        dlg.exec()
+        res = dlg.intValue()
+
         for i in range(doc.numPages()):
             page = doc.page(i)
-            image = page.renderToImage()
+            image = page.renderToImage(res, res)
             self.addImage(image)
 
     def getImageWidget(self, i):
