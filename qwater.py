@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from decimal import Decimal
-import os
 from pathlib import Path
 import sys
 
@@ -12,6 +11,7 @@ from PyQt5.QtGui import (
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow,
     QFileDialog, QColorDialog, QFontDialog,
+    QLabel,
 )
 from PyQt5.uic import loadUiType
 
@@ -33,7 +33,7 @@ class Window(QMainWindow, WinUi):
         self.font = QFont("Serif", 32)
         self.fontButton.setText(self.font.family())
 
-        self.image = None
+        self.images = []
         self.lastPath = Path.cwd()
         self.zoom = Decimal(1)
 
@@ -59,7 +59,7 @@ class Window(QMainWindow, WinUi):
 
     @Slot()
     def on_actionSave_triggered(self):
-        if not self.image:
+        if not self.images:
             return
 
         path, filter = QFileDialog.getSaveFileName(
@@ -69,11 +69,19 @@ class Window(QMainWindow, WinUi):
         if not path:
             return
 
-        self.lastPath = Path(path).parent
+        path = Path(path)
+        self.lastPath = path.parent
 
-        target = self.image.copy()
-        self.paintOn(target)
-        target.save(path)
+        if len(self.images) == 1:
+            target = self.images[0].copy()
+            self.paintOn(target)
+            target.save(str(path))
+        else:
+            path = Path(path)
+            for n, source in enumerate(self.images, 1):
+                target = source.copy()
+                self.paintOn(target)
+                target.save(f"{path.parent}/{path.stem}-{n:02d}{path.suffix}")
 
     @Slot()
     def on_actionOpen_triggered(self):
@@ -89,21 +97,33 @@ class Window(QMainWindow, WinUi):
         self.loadImage(path)
 
     def loadImage(self, path):
-        self.image = QImage(path)
-        self.paintText()
+        self.images.append(QImage(path))
+
+        layout = self.imagesContainer.layout()
+        layout.addWidget(QLabel(parent=self.imagesContainer))
+        self.paintTextImage(layout.count() - 1)
+
+    def getImageWidget(self, i):
+        return self.imagesContainer.layout().itemAt(i).widget()
 
     @Slot()
     def paintText(self):
-        if not self.image:
+        for i in range(self.imagesContainer.layout().count()):
+            self.paintTextImage(i)
+
+    def paintTextImage(self, i):
+        if not self.images:
             return
 
-        target = self.image.copy()
+        source = self.images[i]
+
+        target = source.copy()
         self.paintOn(target)
         target = target.scaled(
             target.size() * self.zoom,
             Qt.IgnoreAspectRatio, Qt.SmoothTransformation
         )
-        self.imgDisplay.setPixmap(QPixmap(target))
+        self.getImageWidget(i).setPixmap(QPixmap(target))
 
     def paintOn(self, device):
         painter = QPainter(device)
