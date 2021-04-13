@@ -34,7 +34,7 @@ class Window(QMainWindow, WinUi):
         self.fontButton.setText(self.font.family())
 
         self.image = None
-        self.path = Path.cwd() / "fake"
+        self.lastPath = Path.cwd()
         self.zoom = Decimal(1)
 
     @Slot()
@@ -62,28 +62,31 @@ class Window(QMainWindow, WinUi):
         if not self.image:
             return
 
-        path = QFileDialog.getSaveFileName(
-            self, "Save image", str(self.path.parent),
+        path, filter = QFileDialog.getSaveFileName(
+            self, "Save image", str(self.lastPath),
             "Images (*.png *.jpg *.jpeg)",
         )
-        if not path[0]:
+        if not path:
             return
 
-        self.path = Path(path[0])
+        self.lastPath = Path(path).parent
+
         target = self.image.copy()
         self.paintOn(target)
-        target.save(str(self.path))
+        target.save(path)
 
     @Slot()
     def on_actionOpen_triggered(self):
-        path = QFileDialog.getOpenFileName(
-            self, "Open image", str(self.path.parent),
+        path, filter = QFileDialog.getOpenFileName(
+            self, "Open image", str(self.lastPath),
             "Images (*.png *.jpg *.jpeg)",
         )
-        if not path[0]:
+        if not path:
             return
-        self.path = Path(path[0])
-        self.loadImage(str(self.path))
+
+        self.lastPath = Path(path).parent
+
+        self.loadImage(path)
 
     def loadImage(self, path):
         self.image = QImage(path)
