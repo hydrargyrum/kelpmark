@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.uic import loadUiType
 
 
-WinUi = loadUiType(str("mainwindow.ui"))[0]
+WinUi = loadUiType(str(Path(__file__).with_name("mainwindow.ui")))[0]
 
 
 class Window(QMainWindow, WinUi):
