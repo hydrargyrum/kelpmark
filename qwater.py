@@ -8,7 +8,9 @@ from popplerqt5 import Poppler
 from PyQt5.QtCore import pyqtSlot as Slot, Qt
 from PyQt5.QtGui import (
     QImage, QPixmap, QFont, QPen, QColor, QPainter,
+    QPageSize,
 )
+from PyQt5.QtPrintSupport import QPrinter
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow,
     QFileDialog, QColorDialog, QFontDialog, QInputDialog,
@@ -82,7 +84,7 @@ class Window(QMainWindow, WinUi):
 
         path, filter = QFileDialog.getSaveFileName(
             self, "Save image", str(self.lastPath),
-            "Images (*.png *.jpg *.jpeg)",
+            "Images (*.png *.jpg *.jpeg);;PDF (*.pdf)",
         )
         if not path:
             return
@@ -90,6 +92,12 @@ class Window(QMainWindow, WinUi):
         path = Path(path)
         self.lastPath = path.parent
 
+        if path.suffix == ".pdf":
+            self.saveAsPdf(path)
+        else:
+            self.saveAsImages(path)
+
+    def saveAsImages(self, path):
         if len(self.images) == 1:
             target = self.images[0].copy()
             self.paintOn(target)
@@ -100,6 +108,34 @@ class Window(QMainWindow, WinUi):
                 target = source.copy()
                 self.paintOn(target)
                 target.save(f"{path.parent}/{path.stem}-{n:02d}{path.suffix}")
+
+    def saveAsPdf(self, path):
+        pdf = QPrinter()
+        pdf.setFullPage(True)
+        pdf.setOutputFileName(str(path))
+
+        first = True
+        painter = QPainter()
+
+        for source in self.images:
+            marked = source.copy()
+            self.paintOn(marked)
+
+            pdf.setPageSize(QPageSize(marked.size()))
+
+            if first:
+                first = False
+                painter.begin(pdf)
+            else:
+                pdf.newPage()
+
+            # though we set page size, the rect is not the same
+            rect = marked.rect()
+            rect.setWidth(pdf.width())
+            rect.setHeight(pdf.height())
+            painter.drawImage(rect, marked)
+
+        painter.end()
 
     @Slot()
     def on_actionOpen_triggered(self):
