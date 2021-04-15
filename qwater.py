@@ -208,10 +208,12 @@ class Window(QMainWindow, WinUi):
 
         text = self.textEdit.toPlainText()
 
-        box = device.rect()
+        box = painter.boundingRect(device.rect(), Qt.AlignCenter, text)
+
         painter.translate(box.center())
         painter.rotate(self.textAngle.value())
         painter.translate(-box.center())
+
         painter.drawText(box, Qt.AlignCenter, text)
 
         painter.end()
