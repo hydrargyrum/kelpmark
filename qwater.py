@@ -8,7 +8,7 @@ from popplerqt5 import Poppler
 from PyQt5.QtCore import pyqtSlot as Slot, Qt
 from PyQt5.QtGui import (
     QImage, QPixmap, QFont, QPen, QColor, QPainter,
-    QPageSize,
+    QPageSize, QTransform,
 )
 from PyQt5.QtPrintSupport import QPrinter
 from PyQt5.QtWidgets import (
@@ -48,6 +48,7 @@ class Window(QMainWindow, WinUi):
         self.textAngle.valueChanged.connect(self.paintText)
         self.textOpacity.valueChanged.connect(self.paintText)
         self.fontSize.valueChanged.connect(self.paintText)
+        self.tilingBox.toggled.connect(self.paintText)
 
         self.color = QColor(0, 0, 0)
         self.font = QFont("Serif", 32)
@@ -210,11 +211,49 @@ class Window(QMainWindow, WinUi):
 
         box = painter.boundingRect(device.rect(), Qt.AlignCenter, text)
 
-        painter.translate(box.center())
-        painter.rotate(self.textAngle.value())
-        painter.translate(-box.center())
+        transform = QTransform()
+        center = box.center()
+        transform.translate(center.x(), center.y())
+        transform.rotate(self.textAngle.value())
+        transform.translate(-center.x(), -center.y())
 
-        painter.drawText(box, Qt.AlignCenter, text)
+        def paintWith(tileform):
+            combined = tileform * transform
+            if not combined.mapRect(box).intersects(device.rect()):
+                return False
+
+            painter.setTransform(combined)
+            painter.drawText(box, Qt.AlignCenter, text)
+            return True
+
+        def paintTile(x, y):
+            tile = QTransform()
+            tile.translate(x * box.width(), y * box.height())
+            return paintWith(tile)
+
+        # paint on center
+        paintWith(QTransform())
+
+        if self.tilingBox.isChecked():
+            # paint tiles with increasing distance
+            # xxxxx
+            # x...x
+            # x.o.x
+            # x...x
+            # xxxxx
+            for radius in range(1, 1000):
+                has_painted = False
+
+                for x in range(-radius, radius + 1):
+                    has_painted = paintTile(x, -radius) or has_painted
+                    has_painted = paintTile(x, radius) or has_painted
+                for y in range(-radius + 1, radius):
+                    has_painted = paintTile(-radius, y) or has_painted
+                    has_painted = paintTile(radius, y) or has_painted
+
+                if not has_painted:
+                    # everything was out of bounds, so will the next radius
+                    break
 
         painter.end()
 
