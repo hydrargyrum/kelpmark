@@ -8,7 +8,7 @@ from popplerqt5 import Poppler
 from PyQt5.QtCore import pyqtSlot as Slot, Qt
 from PyQt5.QtGui import (
     QImage, QPixmap, QFont, QPen, QColor, QPainter,
-    QPageSize, QTransform,
+    QPageSize, QTransform, QFontMetricsF,
 )
 from PyQt5.QtPrintSupport import QPrinter
 from PyQt5.QtWidgets import (
@@ -49,6 +49,8 @@ class Window(QMainWindow, WinUi):
         self.textOpacity.valueChanged.connect(self.paintText)
         self.fontSize.valueChanged.connect(self.paintText)
         self.tilingBox.toggled.connect(self.paintText)
+        self.widthSpacing.valueChanged.connect(self.paintText)
+        self.heightSpacing.valueChanged.connect(self.paintText)
 
         self.color = QColor(0, 0, 0)
         self.font = QFont("Serif", 32)
@@ -228,7 +230,10 @@ class Window(QMainWindow, WinUi):
 
         def paintTile(x, y):
             tile = QTransform()
-            tile.translate(x * box.width(), y * box.height())
+            tile.translate(
+                x * (box.width() + metrics.horizontalAdvance(" ") * self.widthSpacing.value() / 100),
+                y * (box.height() + metrics.lineSpacing() * self.heightSpacing.value() / 100),
+            )
             return paintWith(tile)
 
         # paint on center
@@ -241,6 +246,9 @@ class Window(QMainWindow, WinUi):
             # x.o.x
             # x...x
             # xxxxx
+
+            metrics = QFontMetricsF(self.font)
+
             for radius in range(1, 1000):
                 has_painted = False
 
