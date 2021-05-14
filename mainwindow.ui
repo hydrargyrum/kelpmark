@@ -109,6 +109,9 @@
            <property name="tickPosition">
             <enum>QSlider::TicksAbove</enum>
            </property>
+           <property name="tickInterval">
+            <number>10</number>
+           </property>
           </widget>
          </item>
          <item>
@@ -131,6 +134,9 @@
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="tickInterval">
+            <number>10</number>
            </property>
           </widget>
          </item>
