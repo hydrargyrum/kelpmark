@@ -151,6 +151,9 @@ class Window(QMainWindow, WinUi):
 
         self.lastPath = Path(path).parent
 
+        self.loadFile(path)
+
+    def loadFile(self, path):
         if path.endswith(".pdf"):
             self.loadPdf(path)
         else:
@@ -290,6 +293,6 @@ if __name__ == "__main__":
     win.show()
 
     for file in app.arguments()[1:]:
-        win.loadImage(file)
+        win.loadFile(file)
 
     app.exec()
