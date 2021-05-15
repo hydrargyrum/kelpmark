@@ -240,6 +240,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QCheckBox" name="staggeredBox">
+           <property name="text">
+            <string>Sta&amp;ggered</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QLabel" name="label_5">
            <property name="text">
             <string>&amp;Horizontal spacing</string>

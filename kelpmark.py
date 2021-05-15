@@ -59,6 +59,7 @@ class Window(QMainWindow, WinUi):
         self.textOpacity.valueChanged.connect(self.paintText)
         self.fontSize.valueChanged.connect(self.paintText)
         self.tilingBox.toggled.connect(self.paintText)
+        self.staggeredBox.toggled.connect(self.paintText)
         self.boldBox.toggled.connect(self.paintText)
         self.widthSpacing.valueChanged.connect(self.paintText)
         self.heightSpacing.valueChanged.connect(self.paintText)
@@ -254,8 +255,13 @@ class Window(QMainWindow, WinUi):
 
         def paintTile(x, y):
             tile = QTransform()
+
+            stagger = 0
+            if y % 2 and self.staggeredBox.isChecked():
+                stagger = 0.5
+
             tile.translate(
-                x * (box.width() + metrics.horizontalAdvance(" ") * self.widthSpacing.value() / 100),
+                (stagger + x) * (box.width() + metrics.horizontalAdvance(" ") * self.widthSpacing.value() / 100),
                 y * (box.height() + metrics.lineSpacing() * self.heightSpacing.value() / 100),
             )
             return paintWith(tile)
