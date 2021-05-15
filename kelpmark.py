@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# This is free and unencumbered software released into the public domain.
+# See UNLICENSE file
 
 from decimal import Decimal
 from pathlib import Path
