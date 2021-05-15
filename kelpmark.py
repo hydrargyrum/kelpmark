@@ -14,7 +14,7 @@ from PyQt5.QtPrintSupport import QPrinter
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow,
     QFileDialog, QColorDialog, QFontDialog, QInputDialog,
-    QLabel,
+    QLabel, QGraphicsColorizeEffect,
 )
 from PyQt5.uic import loadUiType
 
@@ -62,6 +62,10 @@ class Window(QMainWindow, WinUi):
         self.heightSpacing.valueChanged.connect(self.paintText)
 
         self.color = QColor(0, 0, 0)
+        effect = QGraphicsColorizeEffect()
+        effect.setColor(self.color)
+        self.colorButton.setGraphicsEffect(effect)
+
         self.font = QFont("Serif", 32)
         self.fontButton.setText(self.font.family())
 
@@ -76,6 +80,11 @@ class Window(QMainWindow, WinUi):
             return
 
         self.color = new
+
+        effect = QGraphicsColorizeEffect()
+        effect.setColor(self.color)
+        self.colorButton.setGraphicsEffect(effect)
+
         self.paintText()
 
     @Slot()
