@@ -85,9 +85,9 @@ class Window(QMainWindow, WinUi):
         if not self.images:
             return
 
-        path, filter = QFileDialog.getSaveFileName(
-            self, "Save image", str(self.lastPath),
-            "Images (*.png *.jpg *.jpeg);;PDF (*.pdf)",
+        path, _ = QFileDialog.getSaveFileName(
+            self, self.tr("Save image"), str(self.lastPath),
+            self.tr("Images (*.png *.jpg *.jpeg);;PDF (*.pdf)"),
         )
         if not path:
             return
@@ -142,9 +142,9 @@ class Window(QMainWindow, WinUi):
 
     @Slot()
     def on_actionOpen_triggered(self):
-        path, filter = QFileDialog.getOpenFileName(
-            self, "Open image", str(self.lastPath),
-            "Images (*.png *.jpg *.jpeg);;PDF (*.pdf)",
+        path, _ = QFileDialog.getOpenFileName(
+            self, self.tr("Open image"), str(self.lastPath),
+            self.tr("Images/PDF (*.png *.jpg *.jpeg *.pdf)"),
         )
         if not path:
             return
