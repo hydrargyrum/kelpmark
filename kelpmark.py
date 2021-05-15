@@ -24,8 +24,16 @@ WinUi = loadUiType(str(Path(__file__).with_name("mainwindow.ui")))[0]
 
 class ResolutionDialog(QInputDialog):
     def __init__(self, pageSize, *args, **kwargs):
+        file = kwargs.pop("file", None)
+
         super().__init__(*args, **kwargs)
         self.pageSize = pageSize
+
+        title = self.tr("PDF importing resolution")
+        if file:
+            title = self.tr("{} importing resolution").format(Path(file).name)
+
+        self.setWindowTitle(title)
         self.setInputMode(QInputDialog.IntInput)
         self.setIntRange(10, 600)
         self.intValueChanged.connect(self.updateLabel)
@@ -172,7 +180,7 @@ class Window(QMainWindow, WinUi):
     def loadPdf(self, path):
         doc = Poppler.Document.load(path)
         page = doc.page(0)
-        dlg = ResolutionDialog(page.pageSize(), parent=self)
+        dlg = ResolutionDialog(page.pageSize(), file=path, parent=self)
         dlg.exec()
         res = dlg.intValue()
 
