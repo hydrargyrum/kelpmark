@@ -57,6 +57,7 @@ class Window(QMainWindow, WinUi):
         self.textOpacity.valueChanged.connect(self.paintText)
         self.fontSize.valueChanged.connect(self.paintText)
         self.tilingBox.toggled.connect(self.paintText)
+        self.boldBox.toggled.connect(self.paintText)
         self.widthSpacing.valueChanged.connect(self.paintText)
         self.heightSpacing.valueChanged.connect(self.paintText)
 
@@ -215,6 +216,7 @@ class Window(QMainWindow, WinUi):
         painter = QPainter(device)
 
         self.font.setPointSize(self.fontSize.value())
+        self.font.setBold(self.boldBox.isChecked())
         painter.setFont(self.font)
 
         self.color.setAlpha(self.textOpacity.value())
