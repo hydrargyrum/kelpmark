@@ -311,7 +311,7 @@ class Window(QMainWindow, WinUi):
         self.paintText()
 
 
-if __name__ == "__main__":
+def main():
     if sys.excepthook is sys.__excepthook__:
         sys.excepthook = lambda *args: sys.__excepthook__(*args)
 
@@ -323,3 +323,7 @@ if __name__ == "__main__":
         win.loadFile(file)
 
     app.exec()
+
+
+if __name__ == "__main__":
+    main()
