@@ -106,12 +106,18 @@ class Window(QMainWindow, WinUi):
         if not self.images:
             return
 
-        path, _ = QFileDialog.getSaveFileName(
+        path, filter_ = QFileDialog.getSaveFileName(
             self, self.tr("Save image"), str(self.lastPath),
-            self.tr("Images (*.png *.jpg *.jpeg);;PDF (*.pdf)"),
+            self.tr("Images (*.jpg *.jpeg *.png);;PDF (*.pdf)"),
         )
         if not path:
             return
+
+        if path.rpartition(".")[2] not in {"png", "jpg", "jpeg", "pdf"}:
+            if "pdf" in filter_:
+                path += ".pdf"
+            else:
+                path += ".jpg"
 
         path = Path(path)
         self.lastPath = path.parent
