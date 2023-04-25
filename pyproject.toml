@@ -1,0 +1,56 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "KelpMark"
+dynamic = ["version"]
+description = "Watermark images or PDF"
+readme = "README.md"
+license = "Unlicense"
+keywords = [
+    "document",
+    "image",
+    "kyc",
+    "pdf",
+    "watermark",
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: Public Domain",
+    "Topic :: Desktop Environment",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+]
+
+dependencies = [
+    "PyQt5",
+    "python-poppler-qt5",
+]
+
+[[project.authors]]
+name = "Hg"
+email = "dev@indigo.re"
+
+[project.gui-scripts]
+kelpmark = "kelpmark:main"
+
+[project.urls]
+Project = "https://gitlab.com/hydrargyrum/kelpmark"
+
+[tool.hatch.version]
+path = "kelpmark/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/kelpmark",
+]

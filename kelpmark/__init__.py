@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-# This is free and unencumbered software released into the public domain.
-# See UNLICENSE file
+# SPDX-License-Identifier: Unlicense
 
 from decimal import Decimal
 from pathlib import Path
@@ -19,6 +18,9 @@ from PyQt5.QtWidgets import (
     QLabel, QGraphicsColorizeEffect,
 )
 from PyQt5.uic import loadUiType
+
+
+__version__ = "1.0.0"
 
 
 WinUi = loadUiType(str(Path(__file__).with_name("mainwindow.ui")))[0]
