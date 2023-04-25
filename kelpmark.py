@@ -23,6 +23,11 @@ from PyQt5.uic import loadUiType
 
 WinUi = loadUiType(str(Path(__file__).with_name("mainwindow.ui")))[0]
 
+RENDER_HINTS = (
+    Poppler.Document.RenderHint.Antialiasing
+    | Poppler.Document.RenderHint.TextAntialiasing
+)
+
 
 class ResolutionDialog(QInputDialog):
     def __init__(self, pageSize, *args, **kwargs):
@@ -203,6 +208,7 @@ class Window(QMainWindow, WinUi):
         dlg.exec()
         res = dlg.intValue()
 
+        doc.setRenderHint(RENDER_HINTS)
         for i in range(doc.numPages()):
             page = doc.page(i)
             image = page.renderToImage(res, res)
