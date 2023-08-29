@@ -4,14 +4,14 @@ KelpMark helps creating watermarks on images or PDFs.
 
 ## Example
 
-Suppose you have your passport: ![sample passport](kelpmark_before.jpg)
+Suppose you have your passport: ![sample passport](https://github.com/hydrargyrum/kelpmark/blob/main/kelpmark_before.jpg?raw=true)
 
 And need to send it to some company, but don't trust them because they might have security breaches and might leak your data.
 So you want to watermark it to make it harder to reuse in case of data leak.
 
-![kelpmark screenshot](kelpmark_screenshot.jpg)
+![kelpmark screenshot](https://github.com/hydrargyrum/kelpmark/blob/main/kelpmark_screenshot.jpg?raw=true)
 
-Then you can save the resulting image/PDF: ![watermarked passport](kelpmark_after.jpg)
+Then you can save the resulting image/PDF: ![watermarked passport](https://github.com/hydrargyrum/kelpmark/blob/main/kelpmark_after.jpg?raw=true)
 
 ## Features
 
