@@ -29,6 +29,10 @@ Then you can save the resulting image/PDF: ![watermarked passport](https://githu
 
 [requirements.txt](requirements.txt)
 
+## Install
+
+[`pipx install KelpMark`](https://pypi.org/project/KelpMark/)
+
 ## License
 
 KelpMark is licensed under the [Unlicense](UNLICENSE).
