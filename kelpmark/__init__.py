@@ -20,7 +20,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.uic import loadUiType
 
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 
 WinUi = loadUiType(str(Path(__file__).with_name("mainwindow.ui")))[0]
